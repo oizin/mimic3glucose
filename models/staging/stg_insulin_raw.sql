@@ -3,7 +3,7 @@
 with insulin as (
     SELECT atr.SUBJECT_ID, 
             atr.HADM_ID, 
-            atr.ICUSTAY_ID
+            atr.STAY_ID
         , CAST(atr.starttime AS TIMESTAMP) AS STARTTIME
         , CAST(atr.endtime AS TIMESTAMP) AS ENDTIME
         , atr.AMOUNT, 
@@ -20,12 +20,12 @@ with insulin as (
             WHEN itemid=223262 THEN 'Short'        --'InsHum'
             ELSE null END) AS InsulinType
         , (CASE
-            WHEN UPPER(ORDERCATEGORYNAME) LIKE '%NON IV%' THEN 'BOLUS_INYECTION'
+            WHEN UPPER(ORDERCATEGORYNAME) LIKE '%NON IV%' THEN 'BOLUS_INJECTION'
             WHEN UPPER(ORDERCATEGORYNAME) LIKE '%MED BOLUS%' THEN 'BOLUS_PUSH'
             WHEN ORDERCATEGORYNAME IN ('01-Drips','12-Parenteral Nutrition') THEN 'INFUSION'
             ELSE null END) AS InsulinAdmin
         , (CASE WHEN STATUSDESCRIPTION IN ('Paused','Stopped') THEN 1 ELSE 0 END) AS INFXSTOP
-    FROM `mimiciii_clinical.inputevents_mv` atr								
+    FROM `mimic_icu.inputevents` atr								
     WHERE itemid IN (223257   -- [Ins7030]     - Insulin 70/30 
                     , 223258  -- [InsRegular]  - Insulin Regular
                     , 223259  -- [InsNPH]      - Insulin NPH
@@ -33,12 +33,12 @@ with insulin as (
                     , 223261  -- [nsHum7525]   - Insulin Humalog 75/25
                     , 223262) -- [InsHum]      - Insulin Humalog
         AND atr.statusdescription != 'Rewritten' --Exclude invalid measures that were rewritten
-    GROUP BY atr.subject_id, atr.hadm_id, atr.icustay_id, atr.starttime
+    GROUP BY atr.subject_id, atr.hadm_id, atr.stay_id, atr.starttime
         , atr.endtime, atr.ITEMID, atr.ordercategoryname
         , atr.statusdescription, atr.amount, atr.rate, atr.ORIGINALRATE
-    ORDER BY atr.icustay_id, atr.subject_id, atr.hadm_id, atr.starttime
+    ORDER BY atr.stay_id, atr.subject_id, atr.hadm_id, atr.starttime
 )
 
 select * 
 from insulin 
-where icustay_id is not null -- Drop missing ICU stays: Data not taken during an ICU stay
+where stay_id is not null -- Drop missing ICU stays: Data not taken during an ICU stay

@@ -3,7 +3,7 @@
 with glucose as (
     select SUBJECT_ID,
     HADM_ID,
-    ICUSTAY_ID,
+    stay_id,
         charttime as GLCTIMER,
         glucose as glc,
         glc_source,
@@ -19,7 +19,7 @@ with glucose as (
 insulin as (
         select SUBJECT_ID,
             HADM_ID,
-            ICUSTAY_ID,
+            stay_id,
             CAST(NULL as TIMESTAMP) as GLCTIMER,
             NULL as GLC,
             CAST(NULL as STRING) as glc_source,
@@ -33,8 +33,8 @@ insulin as (
     from {{ ref('stg_insulin_clean') }}
 )
 
-select SUBJECT_ID,HADM_ID,ICUSTAY_ID,GLCTIMER,GLC,glc_source,STARTTIME,ENDTIME,INPUT,INPUT_HRS,InsulinType,EVENT,INFXSTOP
+select SUBJECT_ID,HADM_ID,stay_id,GLCTIMER,GLC,glc_source,STARTTIME,ENDTIME,INPUT,INPUT_HRS,InsulinType,EVENT,INFXSTOP
 from glucose
 union all
-select SUBJECT_ID,HADM_ID,ICUSTAY_ID,GLCTIMER,GLC,glc_source,STARTTIME,ENDTIME,INPUT,INPUT_HRS,InsulinType,EVENT,INFXSTOP
+select SUBJECT_ID,HADM_ID,stay_id,GLCTIMER,GLC,glc_source,STARTTIME,ENDTIME,INPUT,INPUT_HRS,InsulinType,EVENT,INFXSTOP
 from insulin

@@ -13,13 +13,13 @@ lab as (
         	glucose < 1000
 )
 
-select SUBJECT_ID,HADM_ID,ICUSTAY_ID,
+select SUBJECT_ID,HADM_ID,stay_id,
         CASE WHEN charttime < storetime THEN charttime ELSE storetime END as charttime,
         STORETIME,glucose,ITEM_GLC,glc_source
 from (
-    select SUBJECT_ID,HADM_ID,ICUSTAY_ID,CHARTTIME,STORETIME,glucose,ITEM_GLC,'fingerstick' as glc_source
+    select SUBJECT_ID,HADM_ID,stay_id,CHARTTIME,STORETIME,glucose,ITEM_GLC,'fingerstick' as glc_source
     from fingerstick
     union all
-    select SUBJECT_ID,HADM_ID,ICUSTAY_ID,CHARTTIME,STORETIME,glucose,ITEM_GLC,'lab' as glc_source
+    select SUBJECT_ID,HADM_ID,stay_id,CHARTTIME,STORETIME,glucose,ITEM_GLC,'lab' as glc_source
     from lab
 ) tab

@@ -1,7 +1,7 @@
 {{ config(materialized='view') }}
 
 with infusions as (
-    select SUBJECT_ID,HADM_ID,ICUSTAY_ID,STARTTIME,ENDTIME,AMOUNT,coalesce(RATE,ORIGINALRATE) as rate,ORIGINALRATE,ITEMID,ORDERCATEGORYNAME,InsulinType,InsulinAdmin,INFXSTOP 
+    select SUBJECT_ID,HADM_ID,stay_id,STARTTIME,ENDTIME,AMOUNT,coalesce(RATE,ORIGINALRATE) as rate,ORIGINALRATE,ITEMID,ORDERCATEGORYNAME,InsulinType,InsulinAdmin,INFXSTOP 
     from {{ ref('stg_insulin_raw') }}
     where upper(InsulinAdmin)='INFUSION' and upper(InsulinType)='SHORT'
 ),

@@ -1,12 +1,6 @@
-
-with tmp as (
-    select hadm_id,GLCTIMER,count(*) as n
-    from {{ ref('stg_glucose_insulin_icustay') }}
-    group by hadm_id,GLCTIMER
-    having n > 1
-)
-select *
+-- are there any duplicated measures? Note there may be several measures at the same time
+select STAY_ID, GLCTIMER,count(*) as N
 from {{ ref('stg_glucose_insulin_icustay') }}
-where hadm_id in (
-    select hadm_id from tmp where n > 1
-)
+where GLCTIMER is not null
+group by STAY_ID,GLCTIMER,GLC,glc_source
+having N > 1
