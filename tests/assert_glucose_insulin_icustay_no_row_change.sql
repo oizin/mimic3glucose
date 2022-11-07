@@ -2,5 +2,5 @@
 select STAY_ID, GLCTIMER,count(*) as N
 from {{ ref('stg_glucose_insulin_icustay') }}
 where GLCTIMER is not null
-group by STAY_ID,GLCTIMER,GLC,glc_source
+group by STAY_ID,GLCTIMER,GLC,glcsource
 having N > 1

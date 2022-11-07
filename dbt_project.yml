@@ -3,7 +3,7 @@ name: 'mimicglucose'
 version: '1.0.0'
 config-version: 2
 
-profile: 'mimic3'
+profile: 'mimic'
 
 model-paths: ["models"]
 analysis-paths: ["analyses"]
@@ -18,6 +18,6 @@ clean-targets:
   - "dbt_packages"
 
 models:
-  mimic3glucose:
+  mimic4_glucose:
     staging:
       +materialized: view

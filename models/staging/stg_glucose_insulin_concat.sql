@@ -6,7 +6,8 @@ with glucose as (
     stay_id,
         charttime as GLCTIMER,
         glucose as glc,
-        glc_source,
+        glucose_lab as glc_lab,
+        GLCSOURCE,
             CAST(NULL as TIMESTAMP) as STARTTIME,
             CAST(NULL as TIMESTAMP) as ENDTIME,
             NULL as INPUT,
@@ -22,7 +23,8 @@ insulin as (
             stay_id,
             CAST(NULL as TIMESTAMP) as GLCTIMER,
             NULL as GLC,
-            CAST(NULL as STRING) as glc_source,
+            NULL as glc_lab,
+            CAST(NULL as STRING) as GLCSOURCE,
             STARTTIME,
             ENDTIME,
             AMOUNT as INPUT,
@@ -33,8 +35,8 @@ insulin as (
     from {{ ref('stg_insulin_clean') }}
 )
 
-select SUBJECT_ID,HADM_ID,stay_id,GLCTIMER,GLC,glc_source,STARTTIME,ENDTIME,INPUT,INPUT_HRS,InsulinType,EVENT,INFXSTOP
+select SUBJECT_ID,HADM_ID,stay_id,GLCTIMER as TIMER,GLCTIMER,GLC,glc_lab,GLCSOURCE,STARTTIME,ENDTIME,INPUT,INPUT_HRS,InsulinType,EVENT,INFXSTOP
 from glucose
 union all
-select SUBJECT_ID,HADM_ID,stay_id,GLCTIMER,GLC,glc_source,STARTTIME,ENDTIME,INPUT,INPUT_HRS,InsulinType,EVENT,INFXSTOP
+select SUBJECT_ID,HADM_ID,stay_id,STARTTIME as TIMER,GLCTIMER,GLC,glc_lab,GLCSOURCE,STARTTIME,ENDTIME,INPUT,INPUT_HRS,InsulinType,EVENT,INFXSTOP
 from insulin
